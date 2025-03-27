@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="nk-main">
+
+             <!-- START: Breadcrumbs -->
+ <div class="nk-gap-1"></div>
+        <div class="container">
+    <ul class="nk-breadcrumbs">
+
+
+         <li><a href="{%url 'home'%}">Home</a></li>
+
+
+         <li><span class="fa fa-angle-right"></span></li>
+
+         <li><a href="{%url 'blog'%}">Blog</a></li>
+
+
+         <li><span class="fa fa-angle-right"></span></li>
+
+         <li><span>Blog List</span></li>
+
+   </ul>
+ </div>
+ <div class="nk-gap-1"></div>
+ <!-- END: Breadcrumbs -->
+
+<div class="container">
+         <div class="row vertical-gap">
+             <div class="col-lg-8">
+
+                 <!-- START: Posts List -->
+               <div class="nk-blog-list">
+
+                         {% for post in posts %}
+                         <!-- START: Post -->
+                         <div class="nk-blog-post">
+                             <div class="row vertical-gap">
+                                 <div class="col-md-5 col-lg-6">
+                                     <a href="{%url 'blog_detail' post.id%}" class="nk-post-img">
+                                         <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                                         <span class="nk-post-comments-count">4</span>
+                                     </a>
+                                 </div>
+                                 <div class="col-md-7 col-lg-6">
+                                     <h2 class="nk-post-title h4"><a href="{%url 'blog_detail' post.id%}">{{ post.title }}</a></h2>
+                                    <div class="nk-post-text">
+                                         <p>{{ post.text|slice:':60' }}</p>
+                                     </div>
+
+                                     <div class="nk-post-by">
+                                         <img src="{{ post.user.avatar.url }}" alt="{{post.user.username}}" class="rounded-circle" width="35"> by <a href="#">{{post.user.username}}</a> in {{post.created_at}}
+                                     </div>
+                                 </div>
+                                                              </div>
+                        </div>
+                         <!-- END: Post -->
+                         {%endfor%}
+
+
+
+                     <!-- pages/blog.html -->
+                    <!-- START: Pagination -->
+                    <div class="nk-pagination nk-pagination-center">
+                        {% if posts.has_previous %}
+                            <a href="?title={{ query }}&page={{ posts.previous_page_number }}" class="nk-pagination-prev">
+                                <span class="ion-ios-arrow-back"></span>
+                            </a>
+                        {% else %}
+                            <span class="nk-pagination-prev disabled">
+                                <span class="ion-ios-arrow-back"></span>
+                            </span>
+                        {% endif %}
+
+                        <nav>
+                            {% for num in posts.paginator.page_range %}
+                                {% if posts.number == num %}
+                                    <a href="?title={{ query }}&page={{ num }}" class="nk-pagination-current">{{ num }}</a>
+                                {% else %}
+                                    <a href="?title={{ query }}&page={{ num }}">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </nav>
+
+                        {% if posts.has_next %}
+                            <a href="?title={{ query }}&page={{ posts.next_page_number }}" class="nk-pagination-next">
+                                <span class="ion-ios-arrow-forward"></span>
+                            </a>
+                        {% else %}
+                            <span class="nk-pagination-next disabled">
+                                <span class="ion-ios-arrow-forward"></span>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <!-- END: Pagination -->
+
+
+
+                 </div>
+                 <!-- END: Posts List -->
+             </div>
+             <div class="col-lg-4">
+                 <!--
+                     START: Sidebar
+
+                     Additional Classes:
+                         .nk-sidebar-left
+                         .nk-sidebar-right#                         .nk-sidebar-sticky
+               -->
+                 <aside class="nk-sidebar nk-sidebar-right nk-sidebar-sticky">
+                     <div class="nk-widget">
+                        <div class="nk-widget-content">
+                            <form action="{% url 'search_by_title' %}" method="get" class="nk-form nk-form-style-1" novalidate="novalidate">
+                                <div class="input-group">
+                                    <input type="text" name="title" class="form-control" placeholder="Search by title...">
+                                    <button type="submit" class="nk-btn nk-btn-color-main-1">
+                                        <span class="ion-search"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                     {% if query %}
+                        <h3>Search Results for "{{ query }}"</h3>
+
+                    {% endif %}
+
+
+ <div class="nk-widget nk-widget-highlighted">
+     <h4 class="nk-widget-title"><span><span class="text-main-1">Latest</span> Video</span></h4>
+     <div class="nk-widget-content">
+         <div class="nk-plain-video" data-video="https://www.youtube.com/watch?v=vXy8UBazlO8"></div>
+     </div>
+                      </div>
+ <div class="nk-widget nk-widget-highlighted">
+     <h4 class="nk-widget-title"><span><span class="text-main-1">Top 3</span> Recent</span></h4>
+     <div class="nk-widget-content">
+
+             {% for new in news %}
+             <div class="nk-widget-post">
+                 <a href="" class="nk-post-image">
+                     <img src="{{new.image.url}}" alt="">
+                 </a>
+                     <h3 class="nk-post-title"><a href="{%url 'blog_detail' new.id%}">{{ new.title }}</a></h3>
+                 <div class="nk-post-date"><span class="fa fa-calendar"></span> {{ new.created_at }} </div>
+             </div>
+               {%endfor%}
+     </div>
+ </div>
+
+
+
+ <div class="nk-widget nk-widget-highlighted">
+     <h4 class="nk-widget-title"><span><span class="text-main-1">Most</span> Popular</span></h4>
+     <div class="nk-widget-content">
+         {% for product in products %}
+         <div class="nk-widget-post">
+                 <a href="" class="nk-post-image">
+                    <img src="{{ product.image.url }}" alt="">
+                </a>
+                 <h3 class="nk-post-title"><a href="{%url 'product_detail' product.id%}">{{product.title}}</a></h3>
+                 <div class="nk-product-rating" data-rating="{{product.rate}}"> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i></div>
+                 <div class="nk-product-price">{{ product.price }}</div>
+             </div>
+         {%endfor%}
+
+
+
+     </div>
+ </div>
+
+                 </aside>
+                                  <!-- END: Sidebar -->
+             </div>
+         </div>
+     </div>
+
+     <div class="nk-gap-2"></div>
+
+
+
+
+
+     </div>
+{%endblock%}
+
+

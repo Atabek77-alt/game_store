@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="nk-main">
+
+            <!-- START: Breadcrumbs -->
+<div class="nk-gap-1"></div>
+<div class="container">
+    <ul class="nk-breadcrumbs">
+
+
+        <li><a href="{%url 'home'%}">Home</a></li>
+
+
+        <li><span class="fa fa-angle-right"></span></li>
+
+        <li><a href="{%url 'blog'%}">Blog</a></li>
+
+
+        <li><span class="fa fa-angle-right"></span></li>
+
+        <li><span>{{ new.title }}</span></li>
+
+    </ul>
+</div>
+<div class="nk-gap-1"></div>
+<!-- END: Breadcrumbs -->
+
+
+
+
+<div class="container">
+        <div class="row vertical-gap">
+            <div class="col-lg-10">
+                <!-- START: Post -->
+                <div class="nk-blog-post nk-blog-post-single">
+        <!-- START: Post Text -->
+        <div class="nk-post-text mt-0">
+            <div class="nk-post-img">
+                <img src="{{ new.image.url }}" alt="{{ new.title }}">
+            </div>
+            <div class="nk-gap-1"></div>
+            <h1 class="nk-post-title h4"></h1>
+            <div class="nk-post-by">
+                <img src="{{ new.user.avatar.url }}" alt="{{ new.user.username }}" class="rounded-circle" width="35">
+              {{ new.created_at }}
+
+                <div class="nk-post-categories">
+                    {% for category in post.categories.all %}
+                        <span class="bg-main-1">{{ category.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="nk-gap"></div>
+            <p></p>
+        </div>
+
+
+
+    <div class="nk-gap"></div>
+    <blockquote class="nk-blockquote">
+        <div class="nk-blockquote-icon"><span>"</span></div>
+        <div class="nk-blockquote-content">
+            {{ new.description }}
+        </div>
+        <div class="nk-blockquote-author"><span>{{ new.user.username }}</span></div>
+    </blockquote>
+
+    <div class="nk-gap"></div>
+
+
+
+                    <div class="nk-gap"></div>
+                    <div class="nk-post-share">
+                        <span class="h5">Share Article:</span>
+
+                        <ul class="nk-social-links-2">
+                            <li><span class="nk-social-facebook" title="Share page on Facebook" data-share="facebook"><span class="fab fa-facebook"></span></span></li>
+                            <li><span class="nk-social-google-plus" title="Share page on Google+" data-share="google-plus"><span class="fab fa-google-plus"></span></span></li>
+                            <li><span class="nk-social-twitter" title="Share page on Twitter" data-share="twitter"><span class="fab fa-twitter"></span></span></li>
+                            <li><span class="nk-social-pinterest" title="Share page on Pinterest" data-share="pinterest"><span class="fab fa-pinterest-p"></span></span></li>
+
+                            <!-- Additional Share Buttons
+                                <li><span class="nk-social-linkedin" title="Share page on LinkedIn" data-share="linkedin"><span class="fab fa-linkedin"></span></span></li>
+                                <li><span class="nk-social-vk" title="Share page on VK" data-share="vk"><span class="fab fa-vk"></span></span></li>
+                            -->
+                        </ul>
+                    </div>
+                </div>
+                <!-- END: Post Text -->
+
+
+
+                <!-- START: Comments -->
+                <div class="comments-section">
+                <h3>Comments</h3>
+
+                {% for comment in news.comments.all %}
+                <div class="nk-comment">
+                    <div class="nk-comment-meta">
+                        <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}" class="rounded-circle" width="35">
+                        by <a href="#">{{ comment.user.username }}</a> in {{ comment.created_at|date:"d F, Y" }}
+                        <a href="#" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 float-right">Reply</a>
+                    </div>
+                    <div class="nk-comment-text">
+                        <p>{{ comment.text }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p>Комментариев пока нет.</p>
+                {% endfor %}
+
+                <h4>Добавить комментарий</h4>
+               {% if user.is_authenticated %}
+                <form method="post" action="{% url 'comment' post_id=new.id %}">
+                    {% csrf_token %}
+                    <textarea name="comment_text" class="form-control" rows="3" placeholder="Напишите комментарий..."></textarea>
+                    <button type="submit" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 mt-2">Отправить</button>
+                </form>
+            </div>
+                 {% endif %}
+
+
+
+            </div>
+            <!-- END: Post -->
+        </div>
+
+    </div>
+</div>
+
+<div class="nk-gap-2"></div>
+
+
+
+
+
+
+    </div>
+
+{%endblock%}
+

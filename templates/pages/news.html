@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="nk-main">
+
+            <!-- START: Breadcrumbs -->
+<div class="nk-gap-1"></div>
+<div class="container">
+    <ul class="nk-breadcrumbs">
+
+
+        <li><a href="index.html">Home</a></li>
+
+
+        <li><span class="fa fa-angle-right"></span></li>
+
+        <li><span>News</span></li>
+
+    </ul>
+</div>
+<div class="nk-gap-1"></div>
+<!-- END: Breadcrumbs -->
+
+
+
+
+<div class="container">
+    <div class="row vertical-gap">
+        <div class="col-lg-8">
+
+
+
+           <!-- news.html -->
+            <div class="nk-tabs">
+                <!-- Вкладки (табы) -->
+                <ul class="nav nav-tabs nav-tabs-fill" role="tablist">
+                    {% for category in categories %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.GET.category == category.name %}active{% endif %}"
+                           href="{% url 'news' %}?category={{ category.name }}">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Контент новостей -->
+                <div class="tab-content">
+                    {% for category in categories %}
+                    <div role="tabpanel" class="tab-pane fade {% if request.GET.category == category.name %}show active{% endif %}" id="category-{{ category.name }}">
+                        <div class="nk-gap"></div>
+                        {% for news_item in news %}
+                            {% if news_item.category.name == category.name %}
+                            <div class="nk-blog-post nk-blog-post-border-bottom">
+                                <div class="row vertical-gap">
+                                    <div class="col-lg-3 col-md-5">
+                                        <a href="{% url 'news_detail' news_item.id %}" class="nk-post-img">
+                                            <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+                                            <span class="nk-post-categories">
+                                                {% for cat in news_item.category.all %}
+                                                <span class="bg-main-1">{{ cat.name }}</span>
+                                                {% endfor %}
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-9 col-md-7">
+                                        <h2 class="nk-post-title h4"><a href="{% url 'news_detail' news_item.id %}">{{ news_item.title }}</a></h2>
+                                        <div class="nk-post-date mt-10 mb-10">
+                                            <span class="fa fa-calendar"></span> {{ news_item.created_at|date:"M d, Y" }}
+                                            <span class="fa fa-comments"></span> <a href="#">0 comments</a>
+                                        </div>
+                                        <div class="nk-post-text">
+                                            <p>{{ news_item.description|truncatewords:30 }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="nk-gap"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </div>
+                    <!-- END: Tabs -->
+
+
+            <!-- START: Posts Grid -->
+            <div class="nk-blog-grid">
+                <div class="row">
+                    {%for new in news%}
+                    <div class="col-md-6">
+                        <!-- START: Post -->
+                        <div class="nk-blog-post">
+                            <a href="{%url 'news_detail' new.id %}" class="nk-post-img">
+                                <img src="{{new.image.url}}" alt="{{new.title}}">
+                                <span class="nk-post-comments-count">4</span>
+
+                                <span class="nk-post-categories">
+                                    {%for cate in new.category.all%}
+                                    <span class="bg-main-4">{{cate.name}}</span>
+                                    {%endfor%}
+                                </span>
+
+                            </a>
+                            <div class="nk-gap"></div>
+                            <h2 class="nk-post-title h4"><a href="{%url 'news_detail' new.id %}">{{new.title}}</a></h2>
+                            <div class="nk-post-text">
+                                <p>{{new.description}}</p>
+                            </div>
+                            <div class="nk-gap"></div>
+                            <a href="{%url 'news_detail' new.id %}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1">Read More</a>
+                            <div class="nk-post-date float-right"><span class="fa fa-calendar"></span> {{new.created_at}}</div>
+                        </div>
+                        <!-- END: Post -->
+                    </div>
+                    {%endfor%}
+
+                </div>
+
+                <div class="nk-pagination nk-pagination-center">
+                {% if news.has_previous %}
+                    <a href="?category={{ request.GET.category }}&page={{ news.previous_page_number }}" class="nk-pagination-prev">
+                        <span class="ion-ios-arrow-back"></span>
+                    </a>
+                {% else %}
+                    <span class="nk-pagination-prev disabled">
+                        <span class="ion-ios-arrow-back"></span>
+                    </span>
+                {% endif %}
+
+                <nav>
+                    {% for num in news.paginator.page_range %}
+                        {% if news.number == num %}
+                            <a href="?category={{ request.GET.category }}&page={{ num }}" class="nk-pagination-current">{{ num }}</a>
+                        {% else %}
+                            <a href="?category={{ request.GET.category }}&page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </nav>
+
+                {% if news.has_next %}
+                    <a href="?category={{ request.GET.category }}&page={{ news.next_page_number }}" class="nk-pagination-next">
+                        <span class="ion-ios-arrow-forward"></span>
+                    </a>
+                {% else %}
+                    <span class="nk-pagination-next disabled">
+                        <span class="ion-ios-arrow-forward"></span>
+                    </span>
+                {% endif %}
+            </div>
+
+            </div>
+            <!-- END: Posts Grid -->
+
+        </div>
+
+    </div>
+</div>
+
+<div class="nk-gap-2"></div>
+
+
+
+
+
+
+    </div>
+
+{%endblock%}

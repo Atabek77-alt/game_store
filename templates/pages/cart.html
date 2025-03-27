@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="nk-main">
+
+        <!-- START: Breadcrumbs -->
+        <div class="nk-gap-1"></div>
+        <div class="container">
+            <ul class="nk-breadcrumbs">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><span class="fa fa-angle-right"></span></li>
+                <li><a href="{% url 'product1' %}">Store</a></li>
+                <li><span class="fa fa-angle-right"></span></li>
+                <li><span>Cart</span></li>
+            </ul>
+        </div>
+        <div class="nk-gap-1"></div>
+        <!-- END: Breadcrumbs -->
+
+        <div class="container">
+            <div class="nk-store nk-store-cart">
+                <div class="table-responsive">
+                    <div class="nk-gap-1"></div>
+                    <!-- START: Products in Cart -->
+                    <table class="table nk-store-cart-products">
+                        <tbody>
+                            {% for cart_item in cart.cart_item.all %}
+                                <tr>
+                                    <td class="nk-product-cart-thumb">
+                                        <a href="store-product.html" class="nk-image-box-1 nk-post-image">
+                                            <img src="{{ cart_item.game.image.url }}" alt="{{ cart_item.game.title }}" width="115">
+                                        </a>
+                                    </td>
+                                    <td class="nk-product-cart-title">
+                                        <h5 class="h6">Product:</h5>
+                                        <div class="nk-gap-1"></div>
+                                        <h2 class="nk-post-title h4">
+                                            <a href="store-product.html">{{ cart_item.game.title }}</a>
+                                        </h2>
+                                    </td>
+                                    <td class="nk-product-cart-price">
+                                        <h5 class="h6">Price:</h5>
+                                        <div class="nk-gap-1"></div>
+                                        <strong>€ {{ cart_item.game.price }}</strong>
+                                    </td>
+                                    <td class="nk-product-cart-quantity">
+                                        <h5 class="h6">Quantity:</h5>
+                                        <form method="post" action="#">
+                                            {% csrf_token %}
+                                            <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1" class="form-control">
+                                            <input type="hidden" name="update" value="True">
+
+                                        </form>
+
+                                    </td>
+                                    <td class="nk-product-cart-remove">
+                                        <a href="{% url 'cart_action' action='remove' cart_item_id=cart_item.game.id %}">
+                                            <span class="ion-android-close"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6">Ваша корзина пуста</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <!-- END: Products in Cart -->
+
+                    <!-- START: Total Price and Update Cart -->
+                    <div class="nk-gap-2"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Total Price: € {{ cart.total_price }}</strong>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <form method="post" action="#">
+                                {% csrf_token %}
+                                <button class="nk-btn nk-btn-rounded nk-btn-color-white">Update Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- END: Total Price and Update Cart -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
